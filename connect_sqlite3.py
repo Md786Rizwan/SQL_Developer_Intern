@@ -1,17 +1,44 @@
 import sqlite3
 
-# Connect to the database
-conn = sqlite3.connect("college.sqlite3")
+# Database file name (must be in the same folder as this script)
+DB_FILE = "college"
 
-# Create a cursor
-cursor = conn.cursor()
+def show_tables():
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
 
-# Example: Show all tables
-cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-print(cursor.fetchall())
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+    conn.close()
 
-# Example: Read data from a table (if 'students' exists)
-# cursor.execute("SELECT * FROM students")
-# print(cursor.fetchall())
+    print("\n📂 Tables in the database:")
+    for table in tables:
+        print(f"- {table[0]}")
 
-conn.close()
+def show_table_data(table_name):
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(f"SELECT * FROM {table_name}")
+        rows = cursor.fetchall()
+
+        print(f"\n📄 Data in table '{table_name}':")
+        for row in rows:
+            print(row)
+
+    except sqlite3.Error as e:
+        print(f"❌ Error: {e}")
+
+    conn.close()
+
+if __name__ == "__main__":
+    # Show all tables
+    show_tables()
+
+    # Example: Show data from 'students' table (change this if your table has a different name)
+    table_to_view = "student"  # <-- change if needed
+    show_table_data(table_to_view)
+
+
+
